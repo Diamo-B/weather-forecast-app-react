@@ -11,8 +11,10 @@ import { useEffect, useState } from "react";
 type Props = {
     windSpeed: number;
     visibility: number;
-    rain: number;
+    rain: number|undefined;
+    rainInterval: string|undefined;
     snow: number | undefined;
+    snowInterval: string|undefined;
     humidityRate: number;
     unixSunrise: number;
     unixSunset: number;
@@ -21,7 +23,9 @@ const OtherStats = ({
     windSpeed,
     visibility,
     rain,
+    rainInterval,
     snow,
+    snowInterval,
     humidityRate,
     unixSunrise,
     unixSunset,
@@ -56,7 +60,7 @@ const OtherStats = ({
                     <>
                         <div className="flex justify-center items-center gap-1">
                             <FaRegSnowflake className="size-6" />
-                            <p>Snow</p>
+                            <p>Snow {snowInterval && "(Last " + snowInterval + ")"}</p>
                         </div>
                         <p>{snow}mm</p>
                     </>
@@ -64,9 +68,9 @@ const OtherStats = ({
                     <>
                         <div className="flex justify-center items-center gap-1">
                             <SiRainmeter className="size-6" />
-                            <p>Rain</p>
+                            <p>Rain {rainInterval&&"(Last "+rainInterval+")"}</p>
                         </div>
-                        <p>{rain}mm</p>
+                            <p>{rain? rain +"mm" : "----"}</p>
                     </>
                 )}
             </div>
