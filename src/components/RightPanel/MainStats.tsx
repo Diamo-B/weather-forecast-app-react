@@ -27,6 +27,12 @@ const MainStats = ({feelsLike, lowest, highest, city, country, location}:Props) 
             <FaTemperatureArrowDown className="size-12 text-white mx-auto" />
             <p>{lowest}℃</p>
           </div>
+          <div>
+            <TiWeatherCloudy className="size-24 text-white mx-auto" />
+            <p className="font-bold text-white text-3xl text-center">
+              {feelsLike}℃
+            </p>
+          </div>
           <div className="text-xl font-bold text-white">
             <FaTemperatureArrowUp className="size-12 text-white mx-auto" />
             <p>{highest}℃</p>

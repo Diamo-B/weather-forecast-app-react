@@ -2,6 +2,7 @@ import RightPanel from "./components/RightPanel";
 import LeftPanel from "./components/LeftPanel";
 import { useEffect, useState } from "react";
 import { Coordinates, positionDetails } from "./types/types";
+<<<<<<< HEAD
 import Loading from "./Loading";
 import LocalizationError from "./LocalizationError";
 import { WeatherCondition } from "./Enums/WeatherEnum";
@@ -12,11 +13,20 @@ export type currentWeather = {
     condition: WeatherCondition,
 }|undefined
 
+=======
+
+
+export type WeatherDescription = {
+    name:string;
+    description:string;
+}
+>>>>>>> e5be4804a6225b8360339cd6717db8cc28f51bd9
 
 function App() {
     const [positionCoordinates, setPositionCoordinates] = useState<
         Coordinates | undefined
     >(undefined);
+<<<<<<< HEAD
     const [positionDetails, setPositionDetails] = useState<positionDetails>();
     const [error, setError] = useState<string | null>(null);
     const [loading, isLoading] = useState<boolean>(true);
@@ -32,6 +42,13 @@ function App() {
     }, []);
 
     const browserPositionRetrievalTrigger = (): void => {
+=======
+    const [currentWeatherDescription, setCurrentWeatherDescription] = useState<WeatherDescription|null>(null)
+    const [positionDetails, setPositionDetails] = useState<positionDetails>();
+    const [error, setError] = useState<string | null>(null);
+    /* const [loading] */
+    useEffect(() => {
+>>>>>>> e5be4804a6225b8360339cd6717db8cc28f51bd9
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position: GeolocationPosition) => {
