@@ -7,6 +7,8 @@ export type positionDetails = {
     city: string;
     country: Country;
     locality: string;
+    lat: number,
+    lon:number
 };
 
 export type Country = {

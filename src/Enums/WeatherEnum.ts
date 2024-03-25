@@ -4,6 +4,6 @@ export enum WeatherCondition {
     windy,
     rainy,
     snowy,
-    ScatteredClouds="Scattered Clouds",
-    Thunderstorm="Thunder Storm"
+    ScatteredClouds,
+    Thunderstorm
 }

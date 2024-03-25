@@ -7,16 +7,8 @@ import { SiRainmeter } from "react-icons/si";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useEffect, useState } from "react";
+import { otherStats } from "../RightPanel";
 
-type Props = {
-    windSpeed: number;
-    visibility: number;
-    rain: number;
-    snow: number | undefined;
-    humidityRate: number;
-    unixSunrise: number;
-    unixSunset: number;
-};
 const OtherStats = ({
     windSpeed,
     visibility,
@@ -25,7 +17,7 @@ const OtherStats = ({
     humidityRate,
     unixSunrise,
     unixSunset,
-}: Props) => {
+}: otherStats) => {
     const [sunrise, setSunrise] = useState<string>("");
     const [sunset, setSunset] = useState<string>("");
 
@@ -51,7 +43,10 @@ const OtherStats = ({
                 </div>
                 <p>{visibility * 0.001}Km/h</p>
             </div>
-            <div className="border py-5">
+            <div className="border py-5 relative">
+                {
+                    !rain && <div className="absolute h-full w-full top-0 left-0 bg-slate-800/70"></div>
+                }
                 {snow!==undefined ? (
                     <>
                         <div className="flex justify-center items-center gap-1">
@@ -66,7 +61,7 @@ const OtherStats = ({
                             <SiRainmeter className="size-6" />
                             <p>Rain</p>
                         </div>
-                        <p>{rain}mm</p>
+                        <p>{rain? rain: "----"} mm</p>
                     </>
                 )}
             </div>

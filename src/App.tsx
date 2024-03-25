@@ -2,6 +2,15 @@ import RightPanel from "./components/RightPanel";
 import LeftPanel from "./components/LeftPanel";
 import { useEffect, useState } from "react";
 import { Coordinates, positionDetails } from "./types/types";
+import Loading from "./Loading";
+import LocalizationError from "./LocalizationError";
+import { WeatherCondition } from "./Enums/WeatherEnum";
+
+export type currentWeather = {
+    id: number,
+    description: string,
+    condition: WeatherCondition,
+}|undefined
 
 
 function App() {
@@ -10,8 +19,19 @@ function App() {
     >(undefined);
     const [positionDetails, setPositionDetails] = useState<positionDetails>();
     const [error, setError] = useState<string | null>(null);
-    /* const [loading] */
+    const [loading, isLoading] = useState<boolean>(true);
+    const [currentWeather, setCurrentWeather] = useState<currentWeather>();
+    const [backgroundImage, setBackgroundImage] = useState<string>("")
+
     useEffect(() => {
+        browserPositionRetrievalTrigger();
+        const time = setTimeout(() => {
+            isLoading(false);
+            clearTimeout(time);
+        }, 500);
+    }, []);
+
+    const browserPositionRetrievalTrigger = (): void => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position: GeolocationPosition) => {
@@ -26,8 +46,7 @@ function App() {
             setError("Geolocation is not supported by your browser.");
             return;
         }
-        //* coordinates fetched successfully
-    }, []);
+    };
 
     const fetchPositionData = () => {
         if (positionCoordinates) {
@@ -49,6 +68,8 @@ function App() {
                             code: response.countryCode,
                         },
                         locality: response.locality,
+                        lat: positionCoordinates.latitude,
+                        lon: positionCoordinates.longitude,
                     });
 
                     return response;
@@ -58,54 +79,60 @@ function App() {
                 });
         }
     };
-   
-    const fetchForecastData = () => {
-        if (positionDetails) {
-            fetch(
-                import.meta.env.VITE_API_CURRENT_WEATHER_URL +
-                    "?q=" +
-                    positionDetails?.city +
-                    "," +
-                    positionDetails?.country.code +
-                    "&units=metric&APPID=" +
-                    import.meta.env.VITE_API_KEY,
-                {
-                    method: "get",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            )
-                .then(async (data) => {
-                    const response = await data.json();
-                    console.log(response);
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        }
-    };
+
     useEffect(() => {
-        fetchPositionData();
+        const time = setTimeout(() => {
+            fetchPositionData();
+            clearTimeout(time);
+        }, 500);
     }, [positionCoordinates]);
-    /* useEffect(() => {
-        fetchForecastData();
-    }, [positionDetails]); */
-    // todo: make a pop-up for activating the localization functionality of the browser
+    
+
+    useEffect(()=>{
+        if(currentWeather){
+            const type:number = Math.floor(currentWeather.id /100);
+            console.log(type);
+            
+            switch(type){
+                case 2:
+                    setBackgroundImage("stormy.jpg")
+                break;
+                case 3:
+                    setBackgroundImage("drizzle.jpg")
+                break;
+                case 5:
+                    setBackgroundImage("heavyRain.jpg")
+                break;
+                case 6:
+                    setBackgroundImage("snow.jpg")
+                break;
+                case 7:
+                    setBackgroundImage("fog.jpg")
+                break;
+                case 8:
+                    setBackgroundImage(currentWeather.id == 800 ?"clear.jpg":"cloudy.jpg")
+                break;
+            }
+        }
+    },[currentWeather])
 
     return (
         <div
             className="w-full h-full max-h-dvh overflow-hidden bg-auto 2xl:bg-cover bg-no-repeat bg-center flex flex-col"
-            style={{ backgroundImage: "url('/stormy 2.jpg')" }}
+            style={{ backgroundImage: `url('/${backgroundImage}')` }}
         >
-          {
-            positionDetails &&
-
-            <div className="w-full h-full grid grid-cols-4 pr-5">
-                <LeftPanel />
-                <RightPanel positionDetails={positionDetails}/>
-            </div>
-          }
+            {loading ? (
+                <div className="bg-slate-800/70 w-full h-full">
+                    <Loading/>
+                </div>
+            ) : error ? (
+                <LocalizationError/>
+            ) : (
+                <div className="w-full h-full grid grid-cols-4 pr-5">
+                    <LeftPanel  positionDetails={positionDetails} currentWeather={currentWeather}/>
+                    <RightPanel positionDetails={positionDetails} setCurrentWeather={setCurrentWeather}/>
+                </div>
+            )}
         </div>
     );
 }
